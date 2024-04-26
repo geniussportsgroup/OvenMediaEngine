@@ -17,3 +17,4 @@
 #include "./file/file_provider.h"
 #include "./scheduled/scheduled_provider.h"
 #include "./multiplex/multiplex_provider.h"
+#include "./webvtt/webvtt_provider.h"

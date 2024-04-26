@@ -78,6 +78,7 @@ enum class ProviderType : int8_t
 	RtspPull,
 	Ovt,
 	Mpegts,
+	WebVTT,
 	WebRTC,
 	Srt,
 	File,
