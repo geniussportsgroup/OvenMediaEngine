@@ -54,7 +54,8 @@ enum class StreamSourceType : int8_t
 	Transcoder,
 	File,
 	Scheduled,
-	Multiplex
+	Multiplex,
+	WebVTT
 };
 
 enum class StreamRepresentationType : int8_t
@@ -319,6 +320,8 @@ static ov::String StringFromStreamSourceType(const StreamSourceType &type)
 			return "Scheduled";
 		case StreamSourceType::Multiplex:
 			return "Multiplex";
+		case StreamSourceType::WebVTT:
+			return "WebVTT";
 	}
 
 	return "Unknown";
@@ -363,6 +366,8 @@ static ov::String StringFromProviderType(const ProviderType &type)
 			return "Scheduled";
 		case ProviderType::Multiplex:
 			return "Multiplex";
+		case ProviderType::WebVTT:
+			return "WebVTT";
 	}
 
 	return "Unknown";

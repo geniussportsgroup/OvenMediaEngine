@@ -24,9 +24,9 @@
 
 namespace pvd
 {
-	std::shared_ptr<WebVTTStream> WebVTTStream::Create(StreamSourceType source_type, uint32_t client_id, const info::VHostAppName &vhost_app_name, const ov::String &stream_name, const std::shared_ptr<ov::Socket> &client_socket, const ov::SocketAddress &remote_address, uint64_t lifetime_epoch_msec, const std::shared_ptr<PushProvider> &provider)
+	std::shared_ptr<WebVTTStream> WebVTTStream::Create(StreamSourceType source_type, uint32_t channel_id, const std::shared_ptr<ov::Socket> &client_socket, const std::shared_ptr<PushProvider> &provider)
 	{
-		auto stream = std::make_shared<WebVTTStream>(source_type, client_id, vhost_app_name, stream_name, client_socket, remote_address, lifetime_epoch_msec, provider);
+		auto stream = std::make_shared<WebVTTStream>(source_type, channel_id, client_socket, provider);
 		if (stream != nullptr)
 		{
 			stream->Start();
@@ -34,15 +34,12 @@ namespace pvd
 		return stream;
 	}
 
-	WebVTTStream::WebVTTStream(StreamSourceType source_type, uint32_t client_id, const info::VHostAppName &vhost_app_name, const ov::String &stream_name, std::shared_ptr<ov::Socket> client_socket, const ov::SocketAddress &remote_address, uint64_t lifetime_epoch_msec, const std::shared_ptr<PushProvider> &provider)
-		: PushStream(source_type, client_id, provider),
+	WebVTTStream::WebVTTStream(StreamSourceType source_type, uint32_t channel_id, std::shared_ptr<ov::Socket> client_socket, const std::shared_ptr<PushProvider> &provider)
+		: PushStream(source_type, channel_id, provider),
 
-		  _vhost_app_name(vhost_app_name)
+		  _vhost_app_name(info::VHostAppName::InvalidVHostAppName())
 	{
-		SetName(stream_name);
-		_remote = client_socket;
-		SetMediaSource(ov::String::FormatString("%s://%s", ov::StringFromSocketType(client_socket->GetType()), remote_address.ToString(false).CStr()));
-		_lifetime_epoch_msec = lifetime_epoch_msec;
+
 	}
 
 	WebVTTStream::~WebVTTStream()
