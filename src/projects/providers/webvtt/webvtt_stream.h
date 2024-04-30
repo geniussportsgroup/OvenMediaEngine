@@ -36,22 +36,11 @@ namespace pvd
 		bool OnDataReceived(const std::shared_ptr<const ov::Data> &data) override;
 
 	private:
-		bool Start() override;	
-		bool Publish();
+		bool Start() override;
 
 		// Client socket
 		std::shared_ptr<ov::Socket> _remote = nullptr;
 
-		std::shared_mutex _depacketizer_lock;
-		mpegts::MpegTsDepacketizer	_depacketizer;
-
 		info::VHostAppName _vhost_app_name;
-
-		uint64_t _lifetime_epoch_msec;
-
-		bool _first_frame = true;
-		int64_t _dts_offset = 0;
-		int64_t _prev_dts = -1;
-		uint32_t _wrap_count = 0;
 	};
 }
