@@ -22,14 +22,9 @@ namespace pvd
 							   const ov::SocketAddress &address,
 							   const std::shared_ptr<const ov::Data> &data)
 	{
-		auto remote_address = remote->GetRemoteAddress();
+		auto file_name = "subtitles.vtt";
 
-		if (remote_address != nullptr)
-		{
-			auto file_name = remote_address->ToString().Replace(":", "_");
-
-			ov::DumpToFile(ov::PathManager::Combine(ov::PathManager::GetAppPath("dump/webvtt"), file_name), data, 0L, true);
-		}
+		ov::DumpToFile(ov::PathManager::Combine(ov::PathManager::GetAppPath("dump/webvtt"), file_name), data, 0L, true);
 	}
 
 	std::shared_ptr<WebVTTProvider> WebVTTProvider::Create(const cfg::Server &server_config, const std::shared_ptr<MediaRouterInterface> &router)
