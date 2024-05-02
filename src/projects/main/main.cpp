@@ -143,6 +143,7 @@ int main(int argc, char *argv[])
 
 	// Initialize Providers
 	INIT_MODULE(webrtc_provider, "WebRTC Provider", pvd::WebRTCProvider::Create(*server_config, media_router));
+	INIT_MODULE(webvtt_provider, "WebVTT Provider", pvd::WebVTTProvider::Create(*server_config, media_router));
 	INIT_MODULE(mpegts_provider, "MPEG-TS Provider", pvd::MpegTsProvider::Create(*server_config, media_router));
 	INIT_MODULE(srt_provider, "SRT Provider", pvd::SrtProvider::Create(*server_config, media_router));
 	INIT_MODULE(rtmp_provider, "RTMP Provider", pvd::RtmpProvider::Create(*server_config, media_router));
