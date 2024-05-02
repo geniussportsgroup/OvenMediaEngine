@@ -16,10 +16,7 @@
 
 #include "base/info/application.h"
 #include "base/provider/push_provider/application.h"
-#include "modules/bitstream/aac/aac_adts.h"
-#include "modules/bitstream/h265/h265_parser.h"
-#include "modules/bitstream/nalu/nal_unit_splitter.h"
-#include "modules/containers/mpegts/mpegts_packet.h"
+#include "modules/subtitles/webvtt/webvtt_decoder.h"
 #include "webvtt_provider_private.h"
 
 namespace pvd
@@ -39,7 +36,7 @@ namespace pvd
 
 		  _vhost_app_name(info::VHostAppName::InvalidVHostAppName())
 	{
-
+		_decoder = std::make_shared<webvtt::WebVTTDecoder>();
 	}
 
 	WebVTTStream::~WebVTTStream()
@@ -67,13 +64,25 @@ namespace pvd
 		return PushStream::Stop();
 	}
 
-	const std::shared_ptr<ov::Socket> &WebVTTStream::GetClientSock()
-	{
-		return _remote;
-	}
-
 	bool WebVTTStream::OnDataReceived(const std::shared_ptr<const ov::Data> &data)
 	{
-		return true;
+		_decoder->AddPacket(data);
+
+		if (!_decoder->IsCueAvailable()) {
+			return true;
+		}
+
+		auto cueData = std::make_shared<ov::Data>();
+
+		auto media_packet = std::make_shared<MediaPacket>(GetMsid(),
+														  cmn::MediaType::Subtitle,
+														  1,
+														  cueData,
+														  1,
+														  1,
+														  cmn::BitstreamFormat::WebVTT,
+														  cmn::PacketType::SUBTITLE_EVENT);
+
+		return SendFrame(media_packet);
 	}
 }  // namespace pvd

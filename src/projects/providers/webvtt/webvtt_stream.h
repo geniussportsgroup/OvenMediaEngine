@@ -10,7 +10,7 @@
 
 #include "base/common_types.h"
 #include "base/provider/push_provider/stream.h"
-#include "modules/containers/mpegts/mpegts_depacketizer.h"
+#include "modules/subtitles/webvtt/webvtt_decoder.h"
 
 namespace pvd
 {
@@ -42,5 +42,7 @@ namespace pvd
 		std::shared_ptr<ov::Socket> _remote = nullptr;
 
 		info::VHostAppName _vhost_app_name;
+
+		std::shared_ptr<webvtt::WebVTTDecoder> _decoder;
 	};
 }

@@ -44,6 +44,9 @@ namespace cmn
 		// For Data Track
 		ID3v2,
 
+		// For Subtitles
+		WebVTT,
+
 		HVCC, // H.265 HVCC
 
 		MP3
@@ -65,6 +68,7 @@ namespace cmn
 		EVENT,
 		VIDEO_EVENT,
 		AUDIO_EVENT,
+		SUBTITLE_EVENT,
 	};
 
 	enum class PictureType : uint8_t
