@@ -410,7 +410,7 @@ namespace mon
 			std::string line;
 			while(std::getline(ifs, line) && _run_thread)
 			{
-				// Collector will use '\n' for delimiter
+				// Collector will use '\n' for _lineDelimiter
 				line.append("\n");
 				
 				// end of file

@@ -16,8 +16,8 @@ namespace webvtt
 {
 	struct Cue
 	{
-		char*	_time_start;
-		char*	_time_end;
-		char*	_text;
+		std::string	_time_start;
+		std::string	_time_end;
+		std::string	_text;
 	};
 }
