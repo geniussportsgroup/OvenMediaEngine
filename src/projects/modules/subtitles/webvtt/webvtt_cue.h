@@ -14,10 +14,18 @@
 
 namespace webvtt
 {
-	struct Cue
+	class Cue
 	{
+	public:
+		Cue();
+		~Cue();
+
+		bool Parse(std::string timeInterval, std::string text);
+
+	private:
+		std::string _timeIntervalDelimiter = " --> ";
+		std::string	_text;
 		std::string	_time_start;
 		std::string	_time_end;
-		std::string	_text;
 	};
 }

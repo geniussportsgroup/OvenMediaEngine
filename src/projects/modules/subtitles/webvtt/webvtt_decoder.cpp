@@ -1,5 +1,6 @@
 
 #include "webvtt_decoder.h"
+#include "webvtt_cue.h"
 
 namespace webvtt
 {
@@ -17,76 +18,92 @@ namespace webvtt
 	{
 		_currentData->Append(packet);
 
-		auto charText = _currentData->GetDataAs<char>();
+		auto lines = GetLines();
 
-		auto text = std::string(charText);
+		if (!_headRead)
+		{
+			auto headerLine = lines->front();
 
-		if (_headRead == false){
-			auto foundLineIndex = text.find(_lineDelimiter);
-
-			if(foundLineIndex == std::string::npos){
+			if (headerLine == _header)
+			{
+				_headRead = true;
+			}
+			else
+			{
 				return true;
 			}
 
-			auto line = text.substr(0, foundLineIndex);
-
-			if(line == _header){
-				_headRead = true;
-			} else {
-				return false;
-			}
-
-			text = text.substr(foundLineIndex + 1);
-			_currentData->Erase(0, foundLineIndex + 1);
+			lines->pop_front();
+			_currentData->Erase(0, headerLine.length() + 2);
 		}
 
-		do{
-			auto foundLineIndex = text.find(_lineDelimiter);
+		while(!lines->empty()){
+			auto timeInterval = lines->front();
+			lines->pop_front();
 
-			if(foundLineIndex == std::string::npos){
+			if(!lines->empty()) {
 				return true;
 			}
 
-			auto foundTimeIntervalIndex = text.find(_timeIntervalDelimiter);
-
-			if(foundTimeIntervalIndex == std::string::npos){
-				return true;
-			}
-
-			auto startInterval = text.substr(0, foundTimeIntervalIndex);
-			auto endInterval = text.substr(foundTimeIntervalIndex + _timeIntervalDelimiter.length());
-			text = text.substr(foundTimeIntervalIndex + 1);
-
-			foundLineIndex = text.find(_lineDelimiter);
-
-			if(foundLineIndex == std::string::npos){
-				return true;
-			}
-
-			auto subtitle = text.substr(0, foundLineIndex);
+			auto subtitlesText = lines->front();
+			lines->pop_front();
 
 			auto cue = std::make_shared<webvtt::Cue>();
-			cue->_time_start = startInterval;
-			cue->_time_end = endInterval;
-			cue->_text = subtitle;
+
+			if(!cue->Parse(timeInterval, subtitlesText)){
+				return true;
+			}
+
 			_nextCues->push_back(cue);
 
-			text = text.substr(foundLineIndex + 1);
-			_currentData->Erase(0, foundLineIndex + 1);
-	    }
-		while(!text.empty());
-
+			_currentData->Erase(0, timeInterval.length() + 1 + subtitlesText.length() + 1 + 1);
+		}
 
 		return true;
 	}
 
 	bool WebVTTDecoder::IsCueAvailable()
 	{
-		return false;
+		return !_nextCues->empty();
 	}
 
-	const std::shared_ptr<std::vector<std::shared_ptr<webvtt::Cue>>> WebVTTDecoder::GetNextCues()
+	std::shared_ptr<std::vector<std::shared_ptr<webvtt::Cue>>> WebVTTDecoder::GetNextCues()
 	{
 		return _nextCues;
+	}
+
+	bool WebVTTDecoder::ClearCurrentCues()
+	{
+		_nextCues->clear();
+
+		return true;
+	}
+
+	std::shared_ptr<std::deque<std::string>> WebVTTDecoder::GetLines()
+	{
+		auto lines = std::make_shared<std::deque<std::string>>();
+
+		auto charText = _currentData->GetDataAs<char>();
+
+		auto text = std::string(charText);
+
+		auto startLineIndex = 0;
+		auto foundLineDelimiterIndex = text.find(_lineDelimiter, startLineIndex);
+
+		while (foundLineDelimiterIndex != std::string::npos)
+		{
+			auto numberOfCharacters = foundLineDelimiterIndex - startLineIndex;
+			auto line = text.substr(startLineIndex, numberOfCharacters);
+
+			if (!line.empty() && line != _lineDelimiter)
+			{
+				lines->push_back(line);
+			}
+
+			startLineIndex = foundLineDelimiterIndex + 1;
+			foundLineDelimiterIndex = text.find(_lineDelimiter, startLineIndex);
+		}
+
+		return lines;
 	}
 }  // namespace webvtt

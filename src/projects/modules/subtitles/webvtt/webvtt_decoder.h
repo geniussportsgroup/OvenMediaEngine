@@ -24,14 +24,16 @@ namespace webvtt
 
 		bool IsCueAvailable();
 
-		const std::shared_ptr<std::vector<std::shared_ptr<webvtt::Cue>>> GetNextCues();
+		std::shared_ptr<std::vector<std::shared_ptr<webvtt::Cue>>> GetNextCues();
+		bool ClearCurrentCues();
 
 	private:
+		std::shared_ptr<std::deque<std::string>> GetLines();
+
 		std::shared_ptr<std::vector<std::shared_ptr<webvtt::Cue>>> _nextCues;
 		bool _headRead = false;
 		std::shared_ptr<ov::Data> _currentData;
 		std::string _lineDelimiter = "\n";
-		std::string _timeIntervalDelimiter = " --> ";
 		std::string _header = "WEBVTT";
 	};
 }
