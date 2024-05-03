@@ -12,7 +12,9 @@
 #include "webvtt_cue.h"
 
 #include <chrono>
+#include <iomanip>
 #include <memory>
+#include <sstream>
 #include <vector>
 
 namespace webvtt
@@ -26,8 +28,6 @@ namespace webvtt
 	}
 	bool Cue::Parse(const std::string timeInterval, const std::string text)
 	{
-		std::localtime()
-
 		auto timeIntervalDelimiterIndex = timeInterval.find(_timeIntervalDelimiter);
 
 		if (timeIntervalDelimiterIndex == std::string::npos)
@@ -40,6 +40,20 @@ namespace webvtt
 		auto endIntervalStart = timeIntervalDelimiterIndex + _timeIntervalDelimiter.length();
 		auto endInterval = timeInterval.substr(endIntervalStart, timeInterval.length() - endIntervalStart);
 
-		return false;
+		_time_start = CalculateMiliseconds(startInterval);
+		_time_end = CalculateMiliseconds(endInterval);
+		_duration = _time_end - _time_start;
+
+		return true;
+	}
+	std::int64_t Cue::CalculateMiliseconds(std::string time)
+	{
+		std::istringstream iss(time);
+		int minutes, seconds;
+		char colon;
+		double milliseconds;
+		iss >> minutes >> colon >> seconds >> colon >> milliseconds;
+
+		return milliseconds + 1000 * seconds + 1000 * minutes * 30;
 	}
 }  // namespace webvtt

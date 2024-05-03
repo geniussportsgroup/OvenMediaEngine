@@ -8,6 +8,7 @@ namespace webvtt
 	WebVTTDecoder::WebVTTDecoder()
 	{
 		_currentData = std::make_shared<ov::Data>();
+		_nextCues = std::make_shared<std::vector<std::shared_ptr<Cue>>>();
 	}
 
 	WebVTTDecoder::~WebVTTDecoder()
@@ -41,7 +42,7 @@ namespace webvtt
 			auto timeInterval = lines->front();
 			lines->pop_front();
 
-			if(!lines->empty()) {
+			if(lines->empty()) {
 				return true;
 			}
 

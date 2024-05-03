@@ -72,6 +72,8 @@ namespace pvd
 			return true;
 		}
 
+		//TODO crear el Data por cada cue y enviar frames
+
 		auto cueData = std::make_shared<ov::Data>();
 
 		auto media_packet = std::make_shared<MediaPacket>(GetMsid(),
