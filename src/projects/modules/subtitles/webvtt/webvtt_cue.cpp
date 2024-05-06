@@ -43,6 +43,7 @@ namespace webvtt
 		_time_start = CalculateMiliseconds(startInterval);
 		_time_end = CalculateMiliseconds(endInterval);
 		_duration = _time_end - _time_start;
+		_text = text;
 
 		return true;
 	}

@@ -22,13 +22,14 @@ namespace webvtt
 
 		bool Parse(std::string timeInterval, std::string text);
 
-	private:
-		std::int64_t CalculateMiliseconds(std::string time);
-
-		std::string _timeIntervalDelimiter = " --> ";
 		std::string	_text;
 		std::int64_t	_time_start;
 		std::int64_t	_time_end;
 		std::int64_t	_duration;
+
+	private:
+		std::int64_t CalculateMiliseconds(std::string time);
+
+		std::string _timeIntervalDelimiter = " --> ";
 	};
 }

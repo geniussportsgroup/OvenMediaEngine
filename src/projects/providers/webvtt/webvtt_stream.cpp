@@ -37,6 +37,9 @@ namespace pvd
 		  _vhost_app_name(info::VHostAppName::InvalidVHostAppName())
 	{
 		_decoder = std::make_shared<webvtt::WebVTTDecoder>();
+
+		//TODO, requires the name and tracks
+		_name = "WebVTTInput";
 	}
 
 	WebVTTStream::~WebVTTStream()
@@ -46,6 +49,12 @@ namespace pvd
 	bool WebVTTStream::Start()
 	{
 		SetState(Stream::State::PLAYING);
+
+		//TODO we don't know how to get this info
+		_vhost_app_name = ocst::Orchestrator::GetInstance()->ResolveApplicationNameFromDomain("app", "app");
+
+		PublishChannel(_vhost_app_name);
+
 		return PushStream::Start();
 	}
 
@@ -72,19 +81,22 @@ namespace pvd
 			return true;
 		}
 
-		//TODO crear el Data por cada cue y enviar frames
+		for(std::shared_ptr<webvtt::Cue> cue: *_decoder->GetNextCues()) {
+			auto cueData = std::make_shared<ov::Data>(cue->_text.length());
+			cueData->Append(cue->_text.c_str(), cue->_text.length());
 
-		auto cueData = std::make_shared<ov::Data>();
+			auto media_packet = std::make_shared<MediaPacket>(GetMsid(),
+															  cmn::MediaType::Subtitle,
+															  1,
+															  cueData,
+															  cue->_time_start,
+															  cue->_duration,
+															  cmn::BitstreamFormat::WebVTT,
+															  cmn::PacketType::SUBTITLE_EVENT);
 
-		auto media_packet = std::make_shared<MediaPacket>(GetMsid(),
-														  cmn::MediaType::Subtitle,
-														  1,
-														  cueData,
-														  1,
-														  1,
-														  cmn::BitstreamFormat::WebVTT,
-														  cmn::PacketType::SUBTITLE_EVENT);
+			return SendFrame(media_packet);
+		}
 
-		return SendFrame(media_packet);
+		return true;
 	}
 }  // namespace pvd
