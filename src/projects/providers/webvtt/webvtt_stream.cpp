@@ -50,11 +50,6 @@ namespace pvd
 	{
 		SetState(Stream::State::PLAYING);
 
-		//TODO we don't know how to get this info
-		_vhost_app_name = ocst::Orchestrator::GetInstance()->ResolveApplicationNameFromDomain("app", "app");
-
-		PublishChannel(_vhost_app_name);
-
 		return PushStream::Start();
 	}
 
@@ -81,6 +76,11 @@ namespace pvd
 			return true;
 		}
 
+		if (IsPublished() == false)
+		{
+			Publish();
+		}
+
 		for(std::shared_ptr<webvtt::Cue> cue: *_decoder->GetNextCues()) {
 			auto cueData = std::make_shared<ov::Data>(cue->_text.length());
 			cueData->Append(cue->_text.c_str(), cue->_text.length());
@@ -96,6 +96,25 @@ namespace pvd
 
 			return SendFrame(media_packet);
 		}
+
+		return true;
+	}
+
+	bool WebVTTStream::Publish()
+	{
+		auto subtitle_track = std::make_shared<MediaTrack>();
+
+		subtitle_track->SetId(0);
+		subtitle_track->SetMediaType(cmn::MediaType::Subtitle);
+		subtitle_track->SetTimeBase(1, 1000);
+		subtitle_track->SetOriginBitstream(cmn::BitstreamFormat::WebVTT);
+
+		AddTrack(subtitle_track);
+
+		//TODO we don't know how to get this info
+		_vhost_app_name = ocst::Orchestrator::GetInstance()->ResolveApplicationNameFromDomain("app", "app");
+
+		PublishChannel(_vhost_app_name);
 
 		return true;
 	}

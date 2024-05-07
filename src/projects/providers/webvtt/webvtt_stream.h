@@ -35,6 +35,7 @@ namespace pvd
 
 	private:
 		bool Start() override;
+		bool Publish();
 
 		// Client socket
 		std::shared_ptr<ov::Socket> _remote = nullptr;
