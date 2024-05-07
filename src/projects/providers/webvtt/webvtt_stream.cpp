@@ -37,8 +37,6 @@ namespace pvd
 		  _vhost_app_name(info::VHostAppName::InvalidVHostAppName())
 	{
 		_decoder = std::make_shared<webvtt::WebVTTDecoder>();
-
-		//TODO, requires the name and tracks
 		_name = "WebVTTInput";
 	}
 
