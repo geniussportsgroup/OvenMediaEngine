@@ -167,6 +167,7 @@ namespace pvd
 	void WebVTTProvider::OnConnected(const std::shared_ptr<ov::Socket> &remote)
 	{
 		auto channel_id = remote->GetNativeHandle();
+
 		auto stream = WebVTTStream::Create(StreamSourceType::WebVTT, channel_id, remote, GetSharedPtrAs<pvd::PushProvider>());
 
 		logti("A WebVTT	 client has connected from %s", remote->ToString().CStr());
@@ -180,7 +181,7 @@ namespace pvd
 	{
 		DumpDataToFile(remote, address, data);
 
-//		PushProvider::OnDataReceived(remote->GetNativeHandle(), data);
+		PushProvider::OnDataReceived(remote->GetNativeHandle(), data);
 	}
 
 	// This function is not called by PhysicalPort when the protocol is udp (MPEGTS/UDP)

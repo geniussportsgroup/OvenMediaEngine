@@ -20,7 +20,7 @@ def time_format(milliseconds):
 def subtitles_thread():
     print("subtitles_thread started")
     
-    conn = socket.create_connection(('localhost', 9091))
+    conn = socket.create_connection(('localhost', 9090))
     
     header = "WEBVTT\n\n"
     conn.send(bytes(header, "utf-8"))

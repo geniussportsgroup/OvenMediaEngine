@@ -10,7 +10,7 @@
 
 #include "base/common_types.h"
 #include "base/provider/push_provider/stream.h"
-#include "modules/containers/mpegts/mpegts_depacketizer.h"
+#include "modules/subtitles/webvtt/webvtt_decoder.h"
 
 namespace pvd
 {
@@ -24,8 +24,6 @@ namespace pvd
 
 		bool Stop() override;
 
-		const std::shared_ptr<ov::Socket>&	GetClientSock();
-
 		// ------------------------------------------
 		// Implementation of PushStream
 		// ------------------------------------------
@@ -37,10 +35,13 @@ namespace pvd
 
 	private:
 		bool Start() override;
+		bool Publish();
 
 		// Client socket
 		std::shared_ptr<ov::Socket> _remote = nullptr;
 
 		info::VHostAppName _vhost_app_name;
+
+		std::shared_ptr<webvtt::WebVTTDecoder> _decoder;
 	};
 }
