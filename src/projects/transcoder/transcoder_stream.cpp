@@ -336,11 +336,12 @@ bool TranscoderStream::IsAvailableSmoothTransitionStream(const std::shared_ptr<i
 
 bool TranscoderStream::Push(std::shared_ptr<MediaPacket> packet)
 {
+//	SendFrame()
 	if(_create_success == false)
 	{
 		return false;
 	}
-
+//
 	DecodePacket(std::move(packet));
 
 	return true;

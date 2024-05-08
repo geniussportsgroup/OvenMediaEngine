@@ -106,6 +106,11 @@ namespace pub
 				{
 					stream_data->_stream->SendDataFrame(stream_data->_media_packet);
 				}
+				else if (stream_data->_media_packet->GetMediaType() == cmn::MediaType::Subtitle)
+				{
+					//TODO: might require a SendSubtitleFrame instead
+					stream_data->_stream->SendDataFrame(stream_data->_media_packet);
+				}
 				else
 				{
 					// Nothing can do

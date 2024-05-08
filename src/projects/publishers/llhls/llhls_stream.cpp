@@ -1038,7 +1038,8 @@ void LLHlsStream::SendAudioFrame(const std::shared_ptr<MediaPacket> &media_packe
 
 void LLHlsStream::SendDataFrame(const std::shared_ptr<MediaPacket> &media_packet)
 {
-	if (media_packet->GetBitstreamFormat() != cmn::BitstreamFormat::ID3v2)
+	if (media_packet->GetBitstreamFormat() != cmn::BitstreamFormat::ID3v2
+		&& media_packet->GetBitstreamFormat() != cmn::BitstreamFormat::WebVTT)
 	{
 		// Not supported
 		return;
