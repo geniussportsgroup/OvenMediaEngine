@@ -374,6 +374,13 @@ bool MediaTrack::IsValid()
 		return true;
 	}
 
+	// Subtitle type is always valid
+	if(GetMediaType() == MediaType::Subtitle)
+	{
+		_is_valid = true;
+		return true;
+	}
+
 	switch (GetCodecId())
 	{
 		case MediaCodecId::H264: {
