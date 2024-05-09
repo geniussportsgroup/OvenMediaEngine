@@ -79,6 +79,11 @@ ov::String TranscoderStreamInternal::GetIdentifiedForDataProfile(const uint32_t 
 	return ov::String::FormatString("I=%d,O=bypass", track_id);
 }
 
+ov::String TranscoderStreamInternal::GetIdentifiedForSubtitleProfile(const uint32_t track_id)
+{
+	return ov::String::FormatString("I=%d,O=bypass", track_id);
+}
+
 cmn::Timebase TranscoderStreamInternal::GetDefaultTimebaseByCodecId(cmn::MediaCodecId codec_id)
 {
 	cmn::Timebase timebase(1, 1000);
@@ -412,6 +417,31 @@ std::shared_ptr<MediaTrack> TranscoderStreamInternal::CreateOutputTrackDataType(
 	return output_track;
 }
 
+std::shared_ptr<MediaTrack> TranscoderStreamInternal::CreateOutputTrackSubtitleType(const std::shared_ptr<MediaTrack> &input_track)
+{
+	auto output_track = std::make_shared<MediaTrack>();
+	if (output_track == nullptr)
+	{
+		return nullptr;
+	}
+
+	output_track->SetMediaType(cmn::MediaType::Subtitle);
+	output_track->SetId(NewTrackId());
+	output_track->SetVariantName("");
+	output_track->SetPublicName(input_track->GetPublicName());
+	output_track->SetLanguage(input_track->GetLanguage());
+	output_track->SetBypass(true);
+	output_track->SetCodecId(input_track->GetCodecId());
+	output_track->SetCodecModules("");
+	output_track->SetCodecModuleId(input_track->GetCodecModuleId());
+	output_track->SetOriginBitstream(input_track->GetOriginBitstream());
+	output_track->SetWidth(input_track->GetWidth());
+	output_track->SetHeight(input_track->GetHeight());
+	output_track->SetFrameRateByMeasured(input_track->GetFrameRate());
+	output_track->SetTimeBase(input_track->GetTimeBase());
+
+	return output_track;
+}
 
 bool TranscoderStreamInternal::IsMatchesBypassCondition(const std::shared_ptr<MediaTrack> &input_track, const cfg::vhost::app::oprf::VideoProfile &profile)
 {

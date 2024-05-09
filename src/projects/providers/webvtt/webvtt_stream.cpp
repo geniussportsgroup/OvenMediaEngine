@@ -91,9 +91,10 @@ namespace pvd
 															  WEBVTT_TRACK_ID,
 															  cueData,
 															  cue->_time_start,
-															  cue->_duration,
+															  cue->_time_start,
 															  cmn::BitstreamFormat::WebVTT,
 															  cmn::PacketType::SUBTITLE_EVENT);
+			media_packet->SetDuration(cue->_duration);
 
 			return SendFrame(media_packet);
 		}
