@@ -524,6 +524,7 @@ bool LLHlsStream::IsSupportedCodec(cmn::MediaCodecId codec_id) const
 		case cmn::MediaCodecId::H264:
 		case cmn::MediaCodecId::H265:
 		case cmn::MediaCodecId::Aac:
+		case cmn::MediaCodecId::WebVTT:
 			return true;
 		default:
 			return false;
@@ -1038,8 +1039,7 @@ void LLHlsStream::SendAudioFrame(const std::shared_ptr<MediaPacket> &media_packe
 
 void LLHlsStream::SendDataFrame(const std::shared_ptr<MediaPacket> &media_packet)
 {
-	if (media_packet->GetBitstreamFormat() != cmn::BitstreamFormat::ID3v2
-		&& media_packet->GetBitstreamFormat() != cmn::BitstreamFormat::WebVTT)
+	if (media_packet->GetBitstreamFormat() != cmn::BitstreamFormat::ID3v2)
 	{
 		// Not supported
 		return;
@@ -1078,6 +1078,27 @@ void LLHlsStream::SendDataFrame(const std::shared_ptr<MediaPacket> &media_packet
 
 		packager->ReserveDataPacket(media_packet);
 	}
+}
+
+void LLHlsStream::SendSubtitleFrame(const std::shared_ptr<MediaPacket> &media_packet)
+{
+	if (media_packet == nullptr || media_packet->GetData() == nullptr)
+	{
+		return;
+	}
+
+	if (GetState() == State::CREATED)
+	{
+		BufferMediaPacketUntilReadyToPlay(media_packet);
+		return;
+	}
+
+	if (_initial_media_packet_buffer.IsEmpty() == false)
+	{
+		SendBufferedPackets();
+	}
+
+	AppendMediaPacket(media_packet);
 }
 
 bool LLHlsStream::AppendMediaPacket(const std::shared_ptr<MediaPacket> &media_packet)

@@ -96,6 +96,7 @@ namespace cmn
 		Opus,
 		Jpeg,
 		Png,
+		WebVTT
 	};
 
 	enum class MediaCodecModuleId : uint8_t

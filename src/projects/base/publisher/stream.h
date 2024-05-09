@@ -96,6 +96,7 @@ namespace pub
 		virtual void SendVideoFrame(const std::shared_ptr<MediaPacket> &media_packet) = 0;
 		virtual void SendAudioFrame(const std::shared_ptr<MediaPacket> &media_packet) = 0;
 		virtual void SendDataFrame(const std::shared_ptr<MediaPacket> &media_packet) = 0;
+		virtual void SendSubtitleFrame(const std::shared_ptr<MediaPacket> &media_packet) = 0;
 
 		virtual bool Start();
 		virtual bool Stop();

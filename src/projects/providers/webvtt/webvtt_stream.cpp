@@ -110,6 +110,7 @@ namespace pvd
 		subtitle_track->SetMediaType(cmn::MediaType::Subtitle);
 		subtitle_track->SetTimeBase(1, 1000);
 		subtitle_track->SetOriginBitstream(cmn::BitstreamFormat::WebVTT);
+		subtitle_track->SetCodecId(cmn::MediaCodecId::WebVTT);
 
 		AddTrack(subtitle_track);
 

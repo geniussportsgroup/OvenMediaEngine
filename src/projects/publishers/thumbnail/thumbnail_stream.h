@@ -19,6 +19,7 @@ public:
 	void SendVideoFrame(const std::shared_ptr<MediaPacket> &media_packet) override;
 	void SendAudioFrame(const std::shared_ptr<MediaPacket> &media_packet) override;
 	void SendDataFrame(const std::shared_ptr<MediaPacket> &media_packet) override {} // Not supported
+	void SendSubtitleFrame(const std::shared_ptr<MediaPacket> &media_packet) override {} // Not supported
 
 	std::shared_ptr<ov::Data> GetVideoFrameByCodecId(cmn::MediaCodecId codec_id, int64_t timeout_ms = 0);
 private:
