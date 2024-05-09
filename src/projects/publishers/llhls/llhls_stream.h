@@ -38,6 +38,7 @@ public:
 	void SendVideoFrame(const std::shared_ptr<MediaPacket> &media_packet) override;
 	void SendAudioFrame(const std::shared_ptr<MediaPacket> &media_packet) override;
 	void SendDataFrame(const std::shared_ptr<MediaPacket> &media_packet) override;
+	void SendSubtitleFrame(const std::shared_ptr<MediaPacket> &media_packet) override;
 
 	enum class RequestResult : uint8_t
 	{

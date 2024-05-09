@@ -336,11 +336,12 @@ bool TranscoderStream::IsAvailableSmoothTransitionStream(const std::shared_ptr<i
 
 bool TranscoderStream::Push(std::shared_ptr<MediaPacket> packet)
 {
+//	SendFrame()
 	if(_create_success == false)
 	{
 		return false;
 	}
-
+//
 	DecodePacket(std::move(packet));
 
 	return true;
@@ -529,6 +530,21 @@ std::shared_ptr<info::Stream> TranscoderStream::CreateOutputStream(const cfg::vh
 					output_stream->AddTrack(output_track);
 
 					AddComposite(GetIdentifiedForDataProfile(input_track_id), _input_stream, input_track, output_stream, output_track);
+			}
+			break;
+
+			// If there is a subtitle type track in the input stream, it must be created equally in all output streams.
+			case cmn::MediaType::Subtitle: {
+				auto output_track = CreateOutputTrackSubtitleType(input_track);
+				if (output_track == nullptr)
+				{
+					logtw("Failed to create media tracks. Encoding options need to be checked. track_id(%d)", input_track_id);
+					continue;
+				}
+
+				output_stream->AddTrack(output_track);
+
+				AddComposite(GetIdentifiedForSubtitleProfile(input_track_id), _input_stream, input_track, output_stream, output_track);
 			}
 			break;
 			default: {

@@ -20,6 +20,7 @@ public:
 	void SendVideoFrame(const std::shared_ptr<MediaPacket> &media_packet) override;
 	void SendAudioFrame(const std::shared_ptr<MediaPacket> &media_packet) override;
 	void SendDataFrame(const std::shared_ptr<MediaPacket> &media_packet) override {} // Not supported yet
+	void SendSubtitleFrame(const std::shared_ptr<MediaPacket> &media_packet) override {} // Not supported
 	
 
 	bool OnOvtPacketized(std::shared_ptr<OvtPacket> &packet) override;

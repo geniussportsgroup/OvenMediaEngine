@@ -19,6 +19,9 @@
 #include "modules/subtitles/webvtt/webvtt_decoder.h"
 #include "webvtt_provider_private.h"
 
+// Fix track id
+#define WEBVTT_TRACK_ID		0
+
 namespace pvd
 {
 	std::shared_ptr<WebVTTStream> WebVTTStream::Create(StreamSourceType source_type, uint32_t channel_id, const std::shared_ptr<ov::Socket> &client_socket, const std::shared_ptr<PushProvider> &provider)
@@ -85,12 +88,13 @@ namespace pvd
 
 			auto media_packet = std::make_shared<MediaPacket>(GetMsid(),
 															  cmn::MediaType::Subtitle,
-															  1,
+															  WEBVTT_TRACK_ID,
 															  cueData,
 															  cue->_time_start,
-															  cue->_duration,
+															  cue->_time_start,
 															  cmn::BitstreamFormat::WebVTT,
 															  cmn::PacketType::SUBTITLE_EVENT);
+			media_packet->SetDuration(cue->_duration);
 
 			return SendFrame(media_packet);
 		}
@@ -102,10 +106,11 @@ namespace pvd
 	{
 		auto subtitle_track = std::make_shared<MediaTrack>();
 
-		subtitle_track->SetId(0);
+		subtitle_track->SetId(WEBVTT_TRACK_ID);
 		subtitle_track->SetMediaType(cmn::MediaType::Subtitle);
 		subtitle_track->SetTimeBase(1, 1000);
 		subtitle_track->SetOriginBitstream(cmn::BitstreamFormat::WebVTT);
+		subtitle_track->SetCodecId(cmn::MediaCodecId::WebVTT);
 
 		AddTrack(subtitle_track);
 
